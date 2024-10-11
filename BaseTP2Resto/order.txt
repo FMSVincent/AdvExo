@@ -1,0 +1,14 @@
+salade : 5.5salade : 5.5salade : 5.5salade : 5.5salade : 5.5**********Résumé de la commande 1**********
+salade
+poulet
+riz
+eau plate
+tarte maison
+
+salade : 5.5salade : 5.5salade : 5.5salade : 5.5salade : 5.5**********Résumé de la commande 2**********
+salade
+poulet
+riz
+eau plate
+tarte maison
+
