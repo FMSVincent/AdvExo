@@ -13,6 +13,7 @@ package fr.fms;
 import java.util.Date;
 import java.util.Scanner;
 
+import exception.AccountExeptionNotFound;
 import fr.fms.business.IBankImpl;
 import fr.fms.entities.Account;
 import fr.fms.entities.Current;
@@ -38,8 +39,14 @@ public class MyBankApp {
 		
 		System.out.println("saisissez un numéro de compte bancaire");
 		inputChoice = sc.nextLong();
-		Account isAccount =  bankJob.consultAccount(inputChoice);
-		if(isAccount != null) Utils.displayMenu();
+		Account isAccount;
+		try {
+			isAccount = bankJob.consultAccount(inputChoice);
+			if(isAccount != null) Utils.displayMenu();
+		} catch (AccountExeptionNotFound e) {
+			e.printStackTrace();
+		}
+		
 		
 		
 
@@ -55,10 +62,24 @@ public class MyBankApp {
 		//banquier ou client
 		bankJob.transfert(firstAccount.getAccountId(), 200300400, 200);		// virement de robert chez julie de 200
 		System.out.println("----------------------------------------------------------");
-		System.out.println("solde de "+ firstAccount.getCustomer().getName() + " : " + bankJob.consultAccount(firstAccount.getAccountId()).getBalance());
-		System.out.println("solde de "+ secondAccount.getCustomer().getName() + " : "+ bankJob.consultAccount(secondAccount.getAccountId()).getBalance());
+		try {
+			System.out.println("solde de "+ firstAccount.getCustomer().getName() + " : " + bankJob.consultAccount(firstAccount.getAccountId()).getBalance());
+		} catch (AccountExeptionNotFound e) {
+			e.printStackTrace();
+		}
+		try {
+			System.out.println("solde de "+ secondAccount.getCustomer().getName() + " : "+ bankJob.consultAccount(secondAccount.getAccountId()).getBalance());
+		} catch (AccountExeptionNotFound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("----------------------------------------------------------");
-		bankJob.consultAccount(111111);		//test du compte inexistant
+		try {
+			bankJob.consultAccount(111111);
+		} catch (AccountExeptionNotFound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		//test du compte inexistant
 		bankJob.withdraw(100200300, 10000);	//test capacité retrait dépassée
 		bankJob.transfert(100200300, 100200300, 50000);		//test virement sur le même compte
 		

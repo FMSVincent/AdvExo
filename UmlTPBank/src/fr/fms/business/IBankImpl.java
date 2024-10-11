@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import exception.AccountExeptionNotFound;
 import fr.fms.entities.Account;
 import fr.fms.entities.Current;
 import fr.fms.entities.Customer;
@@ -45,11 +46,12 @@ public class IBankImpl implements IBank {
 	/**
 	 * méthode qui vérifie si un compte existe
 	 * @return Account si existe, null sinon
+	 * @throws AccountExeptionNotFound 
 	 */
 	@Override
-	public Account consultAccount(long accountId) {		
+	public Account consultAccount(long accountId) throws AccountExeptionNotFound {		
 		Account account = accounts.get(accountId);
-		if(account == null)	System.out.println("Vous demandez un compte inexistant !");
+		if(account == null)	throw new AccountExeptionNotFound("Pas de compte !");
 		return account;
 	}
 
@@ -59,13 +61,18 @@ public class IBankImpl implements IBank {
 	 * @param amount correspond au montant à verser
 	 */
 	@Override
-	public void pay(long accountId, double amount) {				
-		Account account = consultAccount(accountId);
-		if(account != null)	{
-			account.setBalance(account.getBalance() + amount);
-			Transaction trans = new Transfert(numTransactions++,new Date(),amount,accountId);
-			account.getListTransactions().add(trans);				// création + ajout d'une opération de versement
+	public void pay(long accountId, double amount) {
+		try {
+			Account account = consultAccount(accountId);
+			if(account != null)	{
+				account.setBalance(account.getBalance() + amount);
+				Transaction trans = new Transfert(numTransactions++,new Date(),amount,accountId);
+				account.getListTransactions().add(trans);				// création + ajout d'une opération de versement
 		}
+		}
+		catch (AccountExeptionNotFound e) {
+				System.err.println(e.getMessage());
+			}
 	}
 
 	/**
@@ -74,7 +81,8 @@ public class IBankImpl implements IBank {
 	 * @param amount correspond au montant à retirer 
 	 */
 	@Override
-	public boolean withdraw(long accountId, double amount) {			
+	public boolean withdraw(long accountId, double amount) {
+		try {
 		Account account = consultAccount(accountId);
 		if(account != null) {
 			double capacity = 0;
@@ -91,8 +99,9 @@ public class IBankImpl implements IBank {
 				System.out.println("vous avez dépassé vos capacités de retrait !");
 				return false;
 			}
+		}}catch(AccountExeptionNotFound e) {
+			System.err.println(e.getMessage());
 		}	
-		else return false;	//compte inexistant -> retrait impossible
 		return true;	//retrait effectué
 	}
 
@@ -120,7 +129,14 @@ public class IBankImpl implements IBank {
 	 */
 	@Override
 	public ArrayList<Transaction> listTransactions(long accountId) {
-		return consultAccount(accountId).getListTransactions();
+		try {
+			if(consultAccount(accountId) != null)
+			return consultAccount(accountId).getListTransactions();
+		}
+		catch(AccountExeptionNotFound e) {
+			System.err.println(e.getMessage());
+		}
+		return null;
 	}
 	
 	/**
