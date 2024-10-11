@@ -45,7 +45,7 @@ public class FoudException {
 				return customer;
 			} 
 		}
-		throw new Exception("pas de client");
+		throw new Exception("pas de client"); // J'aurais du creer une classe ? a faire si j'ai le temps
 	} 
 		
 }

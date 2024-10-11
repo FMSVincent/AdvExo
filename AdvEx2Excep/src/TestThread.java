@@ -28,5 +28,5 @@ public class TestThread extends Thread {
 }
 // 2.2
 // chaque thread s'execute de façon parallele
-// c'est le systeme d'exploitation qui gere quel Thread s'excutea a quel moment
+// c'est le systeme d'exploitation qui gere quel Thread s'excute a a quel moment
 // donc apparition dans un ordre aléatoire
