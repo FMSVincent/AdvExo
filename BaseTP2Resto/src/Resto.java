@@ -3,6 +3,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -60,10 +61,23 @@ public class Resto {
 		//////////////////////
 		System.out.println("bonjour, combien de menus souhaitez vous ?");
 		Scanner scan = new Scanner(System.in);
-		int nbMenu;
-		while (scan.hasNextInt() == false)
-			scan.next();
-		nbMenu = scan.nextInt();
+		int nbMenu = 0;
+        
+        while (true) {
+            try {
+                if (!scan.hasNextInt()) {
+                    throw new InputMismatchException("Il faut un chiffre s'il vous plait");
+                }
+                nbMenu = scan.nextInt();
+                if (nbMenu <= 0) {
+                    throw new IllegalArgumentException("Obligé au dessus de 0.");
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println(e.getMessage());
+                scan.next();
+            }
+        }
 		ArrayList<String> order = new ArrayList<String>();
 
 		try (BufferedWriter file = new BufferedWriter(new FileWriter("order.txt"))) {
@@ -135,15 +149,25 @@ public class Resto {
 		System.out.println("que souhaitez vous comme " + info + " ? [saisir le chiffre correspondant]");
 
 		int value = 0;
-		while (value < 1 || value > maxChoice) {
-			while (scan.hasNextInt() == false)
-				scan.next();
-			value = scan.nextInt();
-			if (value < 1 || value > maxChoice)
-				System.out.println("mauvaise saisie !");
+		 while (value < 1 || value > maxChoice) {
+		        try {
+		            if (!scan.hasNextInt()) {
+		                throw new InputMismatchException("Saisie invalide : entrez un chiffre.");
+		            }
+		            value = scan.nextInt();
+		            if (value < 1 || value > maxChoice) {
+		                System.out.println("mauvaise saisie ! Choisissez un chiffre entre 1 et " + maxChoice);
+		            }
+		        } catch (InputMismatchException e) {
+		            System.out.println(e.getMessage());
+		            scan.next();
+		        }
+		    }
+		    
+		    return value;
 		}
-		return value;
-	}
+
+	
 
 	public static int displayTable(String[] table) {
 		for (int i = 1; i < table.length; i++) {
