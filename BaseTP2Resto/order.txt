@@ -1,14 +1,13 @@
-salade : 5.5salade : 5.5salade : 5.5salade : 5.5salade : 5.5**********Résumé de la commande 1**********
-salade
-poulet
-riz
-eau plate
-tarte maison
-
-salade : 5.5salade : 5.5salade : 5.5salade : 5.5salade : 5.5**********Résumé de la commande 2**********
-salade
-poulet
-riz
-eau plate
-tarte maison
-
+**********Résumé de la commande 1**********
+salade : 5.5
+boeuf : 15.0
+frites : 2.5
+eau plate : 1.0
+Total : 24.0
+**********Résumé de la commande 2**********
+quiche : 6.0
+boeuf : 15.0
+riz : 3.0
+vin : 5.0
+tarte maison : 4.5
+Total : 33.5
