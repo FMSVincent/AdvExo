@@ -97,7 +97,7 @@ public class IBankImpl implements IBank {
 	 * @throws NotEnoughCashException
 	 */
 	@Override
-	public boolean withdraw(long accountId, double amount) throws NotEnoughCashException, AccountExeptionNotFound {
+	public boolean withdraw(long accountId, double amount) throws NotEnoughCashException {
 		try {
 			Account account = consultAccount(accountId);
 			if (account != null) {
@@ -141,7 +141,7 @@ public class IBankImpl implements IBank {
 				System.out.println("Virement de " + amount + "effectué avec succes");
 			}
 		}
-		catch (NotEnoughCashException | AccountExeptionNotFound e) {
+		catch (NotEnoughCashException  e) {
 			throw new NotEnoughCashException("Pas assez d'argent sur le compte"+ e.getMessage());
 		}
 	}

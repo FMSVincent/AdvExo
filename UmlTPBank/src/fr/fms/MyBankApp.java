@@ -1,122 +1,104 @@
-/**
- * Version 1.0 d'une appli bancaire simplifiée offrant la possibilitée de créer des clients, des comptes bancaires associés et des opérations ou
- * transactions bancaires sur ceux-ci telles que : versement, retrait ou virement 
- * + permet d'afficher l'historique des transactions sur un compte
- * + la gestion des cas particuliers est rudimentaire ici puisque la notion d'exception n'a pas encore été abordée
- * 
- * @author El babili - 2023
- * 
- */
-
 package fr.fms;
 
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import exception.AccountExeptionNotFound;
 import exception.NotEnoughCashException;
+import exception.TransfertExceptiion;
 import fr.fms.business.IBankImpl;
 import fr.fms.entities.Account;
 import fr.fms.entities.Current;
 import fr.fms.entities.Customer;
 import fr.fms.entities.Saving;
 import fr.fms.entities.Transaction;
-import fr.fms.tools.Utils;
 
-public class MyBankApp {	
-	public static void main(String[] args) {
-		IBankImpl bankJob = new IBankImpl();
-		
-		Customer robert = new Customer(1, "dupont", "robert", "robert.dupont@xmail.com");
-		Customer julie = new Customer(2, "jolie", "julie", "julie.jolie@xmail.com");		
-		Current firstAccount = new Current(100200300, new Date(), 1500, 200 , robert);
-		Saving secondAccount = new Saving(200300400, new Date(), 2000, 5.5, julie);
-		
-		bankJob.addAccount(firstAccount);
-		bankJob.addAccount(secondAccount);
-		
-		Scanner sc = new Scanner(System.in);
-		long inputChoice;
-		
-		System.out.println("saisissez un numéro de compte bancaire");
-		inputChoice = sc.nextLong();
-		Account isAccount;
-		
-		try {
-			isAccount = bankJob.consultAccount(inputChoice);
-			if(isAccount != null) {
-				Utils.displayMenu();
-				System.out.println("Bienvenue " + isAccount.getCustomer().getName() + "que souhaitez vous faire ?");
-			}
-		} catch (AccountExeptionNotFound e) {
-			System.err.println("Vous demandez un compte inexistant !");
-		}
-		
-		
-		
+public class MyBankApp {
+    public static void main(String[] args) {
+        IBankImpl bankJob = new IBankImpl();
 
-		
-		//banquier ou client
-		bankJob.pay(firstAccount.getAccountId(),500);		// versement de 500 euros sur le compte de robert
-		bankJob.pay(secondAccount.getAccountId(), 1000);	// versement de 1000 euros sur le compte de julie
-		
-		//banquier ou client
-		try {
-			bankJob.withdraw(100200300, 250);
-		} catch (NotEnoughCashException | AccountExeptionNotFound e) {
-			System.err.println("Impossible de retirer ! " + e.getMessage());
-		}
+        Customer robert = new Customer(1, "dupont", "robert", "robert.dupont@xmail.com");
+        Customer julie = new Customer(2, "jolie", "julie", "julie.jolie@xmail.com");
+        Current firstAccount = new Current(100200300, new Date(), 1500, 200, robert);
+        Saving secondAccount = new Saving(200300400, new Date(), 2000, 5.5, julie);
 
-		try {
-			// retrait de 250 euros sur le compte de robert
-			bankJob.withdraw(200300400, 400); // retrait de 400 euros sur le compte de julie
-		} catch (NotEnoughCashException | AccountExeptionNotFound e) {
-			System.err.println("Impossible de retirer ! " + e.getMessage());
-		}
-		
-		//banquier ou client
-		bankJob.transfert(firstAccount.getAccountId(), 200300400, 200);		// virement de robert chez julie de 200
-		System.out.println("----------------------------------------------------------");
-		try {
-			System.out.println("solde de "+ firstAccount.getCustomer().getName() + " : " + bankJob.consultAccount(firstAccount.getAccountId()).getBalance());
-		} catch (AccountExeptionNotFound e) {
-			e.printStackTrace();
-		}
-		try {
-			System.out.println("solde de "+ secondAccount.getCustomer().getName() + " : "+ bankJob.consultAccount(secondAccount.getAccountId()).getBalance());
-		} catch (AccountExeptionNotFound e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("----------------------------------------------------------");
-		try {
-			bankJob.consultAccount(111111);
-		} catch (AccountExeptionNotFound e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		//test du compte inexistant
-		bankJob.withdraw(100200300, 10000);	//test capacité retrait dépassée
-		bankJob.transfert(100200300, 100200300, 50000);		//test virement sur le même compte
-		
-		//banquier
-		bankJob.addAccount(firstAccount);	//test rajout du même compte au même client
-		bankJob.addAccount(new Current(300400500, new Date(), 750, 150 , julie));	//ajout nouveau compte à Julie		
-		System.out.println("\n-----------------------Liste des comptes de ma banque-----------------------------------");
-		for(Account acc : bankJob.listAccounts())
-			System.out.println(acc);
-		System.out.println("\n-----------------------Liste des comptes de julie-----------------------------------");
-		for(Account acc : julie.getListAccounts()) {
-			System.out.println(acc);
-		}
-		
-		//banquier ou client
-		System.out.println("\n-------------------liste des transactions de l'unique compte de robert------------------------");
-		for(Transaction trans : bankJob.listTransactions(100200300))
-			System.out.println(trans);
-		System.out.println("-------------------liste des transactions du compte N° 200300400 de Julie------------------------");
-		for(Transaction trans : bankJob.listTransactions(200300400))
-			System.out.println(trans);
-		
-		sc.close();
-	}
+        bankJob.addAccount(firstAccount);
+        bankJob.addAccount(secondAccount);
+
+        Scanner sc = new Scanner(System.in);
+        long inputChoice = 0;
+
+        while (inputChoice != 6) {
+            try {
+                System.out.println("Saisissez un numéro de compte valide");
+                inputChoice = sc.nextLong();
+
+                Account isAccount = bankJob.consultAccount(inputChoice);
+                if (isAccount != null) {
+                 
+                    System.out.println("Bienvenue " + isAccount.getCustomer().getName() + ", que souhaitez-vous faire ?");
+                    System.out.println("1:versement - 2:retrait, - 3:virement - 4:information sur ce compte - 5:liste des opération - 6:sortir");
+                    int choice = sc.nextInt();
+
+                    switch (choice) {
+                        case 1:
+                            System.out.println("Saisissez le montant à verser : ");
+                            double depositAmount = sc.nextDouble();
+                            bankJob.pay(isAccount.getAccountId(), depositAmount);
+                            System.out.println("Versement de " + depositAmount + "€ effectué avec succès !");
+                            break;
+
+                        case 2:
+                            System.out.println("Saisissez le montant à retirer : ");
+                            double withdrawAmount = sc.nextDouble();
+                            try {
+                                bankJob.withdraw(isAccount.getAccountId(), withdrawAmount);
+                                System.out.println("Retrait de " + withdrawAmount + "€ effectué avec succès !");
+                            } catch (NotEnoughCashException e) {
+                                System.err.println("Pas assez d'argent sur le compte " + e.getMessage());
+                            }
+                            break;
+
+                        case 3:
+                            System.out.println("Saisissez l'ID du compte destinataire : ");
+                            long destAccountId = sc.nextLong();
+                            System.out.println("Saisissez le montant à transférer : ");
+                            double transferAmount = sc.nextDouble();
+                            try {
+                                bankJob.transfert(isAccount.getAccountId(), destAccountId, transferAmount);
+                                System.out.println("Virement de " + transferAmount + "€ effectué avec succès !");
+                            } catch (TransfertExceptiion | NotEnoughCashException e) {
+                                System.err.println("Vous avez dépacé vos capacité de retrait : " + e.getMessage());
+                            }
+                            break;
+
+                        case 4:
+                            System.out.println("Le solde de votre compte est : " + isAccount.getBalance() + "€");
+                            break;
+
+                        case 5:
+                            System.out.println("Voici la liste des transactions :");
+                            for (Transaction trans : bankJob.listTransactions(isAccount.getAccountId())) {
+                                System.out.println(trans);
+                            }
+                            break;
+                        case 6:
+                        	System.out.println("sortie");
+                        	return;
+
+                        default:
+                            System.out.println("Option non valide, veuillez réessayer.");
+                            break;
+                    }
+                }
+            } catch (AccountExeptionNotFound e) {
+                System.err.println("Erreur : " + e.getMessage());
+            } catch (InputMismatchException e) {
+                System.err.println("Erreur de saisie, veuillez entrer des données valides.");
+                sc.next();
+            }
+        }
+        sc.close();
+    }
 }

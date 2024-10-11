@@ -19,6 +19,9 @@ public class FoudException {
 //			}
 //			System.out.println(toDay.getClass().getName());
 		
+		
+		
+		
 		// 1.2
 		// init object customer
 		Customer client1 = new Customer(1, "Tokyo", "oiveira", "tokyo.oliveira@mail.com");
