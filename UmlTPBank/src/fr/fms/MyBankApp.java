@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 import exception.AccountExeptionNotFound;
+import exception.NotEnoughCashException;
 import fr.fms.business.IBankImpl;
 import fr.fms.entities.Account;
 import fr.fms.entities.Current;
@@ -40,11 +41,15 @@ public class MyBankApp {
 		System.out.println("saisissez un numéro de compte bancaire");
 		inputChoice = sc.nextLong();
 		Account isAccount;
+		
 		try {
 			isAccount = bankJob.consultAccount(inputChoice);
-			if(isAccount != null) Utils.displayMenu();
+			if(isAccount != null) {
+				Utils.displayMenu();
+				System.out.println("Bienvenue " + isAccount.getCustomer().getName() + "que souhaitez vous faire ?");
+			}
 		} catch (AccountExeptionNotFound e) {
-			e.printStackTrace();
+			System.err.println("Vous demandez un compte inexistant !");
 		}
 		
 		
@@ -56,8 +61,18 @@ public class MyBankApp {
 		bankJob.pay(secondAccount.getAccountId(), 1000);	// versement de 1000 euros sur le compte de julie
 		
 		//banquier ou client
-		bankJob.withdraw(100200300, 250);			// retrait de 250 euros sur le compte de robert
-		bankJob.withdraw(200300400, 400);			// retrait de 400 euros sur le compte de julie
+		try {
+			bankJob.withdraw(100200300, 250);
+		} catch (NotEnoughCashException | AccountExeptionNotFound e) {
+			System.err.println("Impossible de retirer ! " + e.getMessage());
+		}
+
+		try {
+			// retrait de 250 euros sur le compte de robert
+			bankJob.withdraw(200300400, 400); // retrait de 400 euros sur le compte de julie
+		} catch (NotEnoughCashException | AccountExeptionNotFound e) {
+			System.err.println("Impossible de retirer ! " + e.getMessage());
+		}
 		
 		//banquier ou client
 		bankJob.transfert(firstAccount.getAccountId(), 200300400, 200);		// virement de robert chez julie de 200
