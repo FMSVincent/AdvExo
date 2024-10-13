@@ -62,25 +62,38 @@ public class App {
 				}
 			}
 
-			sc.nextLine();
-			command++;
+			try {
+				iJob.writeIntoFile();
 
-			System.out.println("passer une autre commande ? o ou n");
-			String commadnAgain = sc.nextLine();
-			if (!commadnAgain.equalsIgnoreCase("o")) {
+				sc.nextLine();
+				command++;
 
-				isCommand = false;
-				iJob.displayCommandAndTotal();
-				System.out.println("Merci d'avoir passé commande");
+				System.out.println("passer une autre commande ? o ou n");
+				String commadnAgain = sc.nextLine();
+				
+				if (!commadnAgain.equalsIgnoreCase("o")) {
 
+					isCommand = false;
+					iJob.displayCommandAndTotal();
+					System.out.println("Merci d'avoir passé commande");
+
+				}
+
+			} catch (IOException e) {
+				sc.nextLine();
+				System.out.println("impossible de apsser la commande \n souhaitez vous réessayer ? o ou n");
+				String commadnAgain = sc.nextLine();
+				
+				if (!commadnAgain.equalsIgnoreCase("o")) {
+					
+					isCommand = false;
+					System.out.println("A bientot !");
+
+				}
 			}
+
 		}
 
-		try {
-			iJob.writeIntoFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		sc.close();
 	}
 

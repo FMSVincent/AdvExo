@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import fr.fms.entities.Product;
 import fr.fms.exception.ProductNotFoundException;
 
@@ -75,31 +77,19 @@ public class IJobImpl implements IJob {
 	 */
 	
 	public void writeIntoFile() throws IOException {
-		try (BufferedWriter file = new BufferedWriter(new FileWriter("orders.txt"))) {
-			command.entrySet().stream().forEach(entry -> {
-				double totalPrice = 0;
-				try {
-					file.write("******" + entry.getKey() + "****** \n");
-					entry.getValue().forEach(product -> {
-						try {
-							file.write(product.getName());
-							file.newLine();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					});
-					for (Product product : entry.getValue()) {
-						totalPrice += product.getPrice();
-					}
-					file.write("* Total de la commande : " + totalPrice + " * \n");
-					file.write("-------------------------------------- \n");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-		} catch (IOException e) {
-			throw new IOException(e.getMessage());
+		BufferedWriter file = new BufferedWriter(new FileWriter("ordezzaza\"cze"));
+		StringBuilder strCommand = new StringBuilder();
+		double totalPrice = 0.0;
+		
+		for ( Entry<String, List<Product>> command : command.entrySet()) {
+			strCommand.append("*** "+command.getKey()+" ***\n");
+			for(Product product : command.getValue()) {
+				strCommand.append(product.getName() + " : " +product.getPrice()+"\n");
+				totalPrice += product.getPrice();
+			}
+			strCommand.append("total : " + totalPrice + "\n");
 		}
+		file.write(strCommand.toString());
+		file.close();
 	}
 }
