@@ -5,17 +5,21 @@ public class TestRunnable implements Runnable{
 	
 	@Override
 	public void run() {
-		for (int i = 0; i < 1; i++) {
-			System.out.println("!*!");
-			System.out.println("\"**\"");
-			System.out.println("#***#");
-			System.out.println("$****$");
-			System.out.println("%*****%");
-			System.out.println("&******&");
-			System.out.println("'*******'");
-			System.out.println("(*******(");
-			System.out.println(")********)");
-			System.out.println("***********");
+        String[] shapes = {
+                "!*!",
+                "\"**\"",
+                "#***#",
+                "$****$",
+                "%*****%",
+                "&******&",
+                "'*******'",
+                "(*******(",
+                ")********)",
+                "***********"
+            };
+        
+		for (int i = 0; i < shapes.length; i++) {
+			System.out.println(shapes[i]);
 		}
 	}
 	

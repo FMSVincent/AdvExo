@@ -1,0 +1,16 @@
+******commande : 1****** 
+salade
+vegan
+riz
+eau gazeuse
+mousse au chocolat
+* Total de la commande : 26.0 * 
+-------------------------------------- 
+******commande : 2****** 
+aucune entrée
+boeuf
+légumes
+eau plate
+aucun dessert
+* Total de la commande : 20.0 * 
+-------------------------------------- 
